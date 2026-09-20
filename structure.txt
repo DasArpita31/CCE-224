@@ -1,0 +1,22 @@
+
+PL/SQL
+SET SERVEROUTPUT ON;
+DECLARE
+BEGIN
+END;
+/
+
+VIEW
+CREATE OR REPLACE VIEW name AS
+SELECT ...
+FROM ...;
+
+
+USER
+CREATE USER name IDENTIFIED BY password;
+
+GRANT
+GRANT privilege ON table TO user;
+
+REVOKE
+REVOKE privilege ON table FROM user;
