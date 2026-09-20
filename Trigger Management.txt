@@ -1,0 +1,90 @@
+
+Trigger Management
+
+1.	Create a table named BOOKSHELF_AUDIT, also create a table named BOOKSHELF and Insert data into BOOKSHELF table where Rating will be one attribute. Create a row-level BEFORE UPDATE trigger which will be executed only if the Rating value is updated to BOOKSHELF table. 											
+
+
+
+
+SQL> connect system/0000
+Connected.
+SQL> drop table BOOKSHELF_AUDIT;
+
+Table dropped.
+
+SQL> create table BOOKSHELF_AUDIT
+  2  (Title       VARCHAR2(100),
+  3  Publisher    VARCHAR2(20),
+  4  CategoryName VARCHAR2(20),
+  5  Old_Rating   VARCHAR2(2),
+  6  New_Rating   VARCHAR2(2),
+  7  Audit_Date   DATE);
+
+Table created.
+
+SQL> drop table BOOKSHELF;
+
+Table dropped.
+
+SQL> create table BOOKSHELF
+  2  (Title       VARCHAR2(100) primary key,
+  3  Publisher    VARCHAR2(20),
+  4  CategoryName VARCHAR2(20),
+  5  Rating       VARCHAR2(2)
+  6  );
+
+Table created.
+
+SQL>
+
+
+
+SQL> Insert into BOOKSHELF values
+  2  ('TO KILL A MOCKINGBIRD','HARPERCOLLINS','ADULTFIC','5');
+
+1 row created.
+
+SQL>
+SQL> select * from bookshelf;
+
+TITLE
+--------------------------------------------------------------------------------
+PUBLISHER            CATEGORYNAME         RA
+-------------------- -------------------- --
+TO KILL A MOCKINGBIRD
+HARPERCOLLINS        ADULTFIC             5
+
+
+SQL>
+SQL> create or replace trigger BOOKSHELF_BEF_UPD_ROW
+  2   before update on BOOKSHELF
+  3   for each row
+  4   when (new.Rating < old.Rating)
+  5   begin
+  6   insert into BOOKSHELF_AUDIT
+  7   (Title, Publisher, CategoryName,
+  8   Old_Rating, New_Rating, Audit_Date)
+  9   values
+ 10   (:old.Title, :old.Publisher, :old.CategoryName,
+ 11   :old.Rating, :new.Rating, Sysdate);
+ 12   end;
+ 13   /
+
+Trigger created.
+
+SQL>  update BOOKSHELF set RATING =10
+  2  ;
+
+1 row updated.
+
+SQL>  SELECT * FROM BOOKSHELF_AUDIT;
+
+TITLE
+--------------------------------------------------------------------------------
+PUBLISHER            CATEGORYNAME         OL NE AUDIT_DAT
+-------------------- -------------------- -- -- ---------
+TO KILL A MOCKINGBIRD
+HARPERCOLLINS        ADULTFIC             5  10 09-FEB-25
+
+
+SQL>
